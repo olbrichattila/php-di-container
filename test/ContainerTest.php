@@ -75,7 +75,7 @@ class ContainerTest extends TestCase
         $this->assertTrue($class->getResult());
     }
 
-    public function testResolvesRecursiely(): void
+    public function testResolvesRecursively(): void
     {
         $container = new Container();
         $container->set(AutoWireInterface::class, ClassWithoutDependencyImplementsInterface::class);
