@@ -1,0 +1,23 @@
+{
+    "name": "aolbrich/php-di-container",
+    "description": "PHP Dependency Injection cotainer",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aolbrich\\PhpDiContainer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Attila Olbrich",
+            "email": "olbrichattila@gmx.co.uk"
+        }
+    ],
+    "require": {
+        "psr/container": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    }
+}
