@@ -77,6 +77,7 @@ $class = $container->get(ExampleClass::class);
 Run code quality check:
 ```
 ./vendor/bin/phpstan analyse src test
+./vendor/bin/psalm --show-info=true
 ```
 
 ## Note

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aolbrich\PhpDiContainer;
 
+use phpDocumentor\Reflection\Types\Mixed_;
 use Psr\Container\ContainerInterface;
 use Aolbrich\PhpDiContainer\Exceptions\ContainerException;
 use Aolbrich\PhpDiContainer\Exceptions\NotFoundException;
@@ -42,7 +43,7 @@ class Container implements ContainerInterface
         $this->bindings[$id] = $concrete;
     }
 
-    public function resolve(string $id)
+    public function resolve(string $id): mixed
     {
         $reflectionClass = $this->getReflectionClass($id);
         if (!$constructor = $reflectionClass->getConstructor()) {
@@ -70,18 +71,19 @@ class Container implements ContainerInterface
 
     protected function getDependencies(array $parameters, string $id): array
     {
-        return array_map(function (ReflectionParameter $parameter) use ($id) {
+        return array_map(function (ReflectionParameter $parameter) use ($id): mixed {
             $parameterType = $parameter->getType();
+            $parameterTypeName = $parameterType ? $parameterType->getName() : 'unknown';
+
 
             if ($parameterType instanceof ReflectionNamedType && !$parameterType->isBuiltIn()) {
-                $parameterTypeName = $parameterType->getName();
                 if ($parameterTypeName === $id) {
                     throw new ContainerException('Class ' . $id . ' is circular referenced');
                 }
                 return $this->get($parameterTypeName);
             }
 
-            throw new NotFoundException('Failed to resolve ' . $id . ' parameter type "' . $parameterType->getName() . '" cannot be resolved');
+            throw new NotFoundException('Failed to resolve ' . $id . ' parameter type "' . $parameterTypeName . '" cannot be resolved');
         }, $parameters);
     }
 }
