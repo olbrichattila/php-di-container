@@ -72,6 +72,13 @@ $class = $container->get(ExampleClass::class);
 ./vendor/bin/phpunit test
 ```
 
+## Tools
+
+Run code quality check:
+```
+./vendor/bin/phpstan analyse src test
+```
+
 ## Note
 
 This is not a full implementation of a dependency injection container. It resolves only constructor dependencies.
