@@ -75,7 +75,6 @@ class Container implements ContainerInterface
             $parameterType = $parameter->getType();
             $parameterTypeName = $parameterType ? $parameterType->getName() : 'unknown';
 
-
             if ($parameterType instanceof ReflectionNamedType && !$parameterType->isBuiltIn()) {
                 if ($parameterTypeName === $id) {
                     throw new ContainerException('Class ' . $id . ' is circular referenced');
