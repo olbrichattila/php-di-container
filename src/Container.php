@@ -69,7 +69,7 @@ class Container implements ContainerInterface
         return $reflectionClass;
     }
 
-    protected function getDependencies(array $parameters, string $id): array
+    public function getDependencies(array $parameters, string $id): array
     {
         return array_map(function (ReflectionParameter $parameter) use ($id): mixed {
             $parameterType = $parameter->getType();
@@ -84,5 +84,12 @@ class Container implements ContainerInterface
 
             throw new NotFoundException('Failed to resolve ' . $id . ' parameter type "' . $parameterTypeName . '" cannot be resolved');
         }, $parameters);
+    }
+
+    public function resolveClass(string $className): Object
+    {
+        $classResolver = new ClassResolver($this);
+
+        return $classResolver->resolveClass($className);
     }
 }

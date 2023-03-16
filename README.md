@@ -27,6 +27,35 @@ $container = new Container();
 // Resolve class
 $class = $container->get(ExampleClass::class);
 ```
+## Returns new class and autowire all methods where the annotation says @atowire
+(not the new class will not return with the same class name, or not even inherited from the original class)
+```
+$container = new Container();
+$container->set(ExampleServiceInterface::class, ExampleService::class);
+
+$class = $container->resolveClass(ExampleClassForFunctionLevelResolve::class);
+
+echo $class->getResponseWithAutowiredParams(); // they will be auto wired
+```
+## The class:
+```
+class ExampleClassForFunctionLevelResolve
+{
+    /**
+     * @Autowire
+     */
+    public function getResponseWithAutowiredParams(
+        ExampleServiceInterface $exampleService,
+        ExampleSubService $exampleSubService): string
+    {
+        return
+            $exampleService->getResponse() . ' / ' .
+            $exampleSubService->getResponse() . PHP_EOL;
+    }
+}
+
+```
+
 ### Usage with interface resolution:
 If the class implements a constuctor injection with interface type hint, then the container cannot resolve the depenceny automatically, therefore mapping should be provided by the set method. Mapping can be done by interface and class names, or interface name and closure as well.
 
@@ -96,6 +125,7 @@ Features missing / will be added
 - Immutable-setter Injection
 - Setter Injection
 - Property Injection
+- ~~Method Injection~~
 
 ## Licence
 MIT licence

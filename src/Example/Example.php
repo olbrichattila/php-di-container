@@ -21,3 +21,7 @@ $container->set(ExampleServiceInterface::class, ExampleService::class);
 $class = $container->get(ExampleClass::class);
 
 echo $class->getResponse();
+
+$class2 = $container->resolveClass(ExampleClassForFunctionLevelResolve::class);
+
+echo $class2->getResponseWithAutowiredParams();
