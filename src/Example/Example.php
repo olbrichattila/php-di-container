@@ -40,6 +40,6 @@ echo $class->getResponse();
 $class2 = $container->resolveClass(ExampleClassForFunctionLevelResolve::class);
 echo $class2->getResponseWithAutowiredParams();
 
+// Resolve setters with @autowire
 $class3 = $container->resolveClass(ExampleSetterAutowireClass::class);
 echo $class3->getResponse();
-
