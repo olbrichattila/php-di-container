@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Aolbrich\PhpDiContainer\Example;
 
 /**
- * Example resoling with interface declaration and mapping
+ * Example resolving with interface declaration and mapping
  */
 class ExampleClass
 {
