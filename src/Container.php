@@ -20,6 +20,20 @@ class Container implements ContainerInterface
 {
     protected array $bindings = [];
 
+    public function __construct(array $definitions = [])
+    {
+        $this->setDefinitions($definitions);
+    }
+
+    public function setDefinitions(array $definitions = []): void
+    {
+        $this->bindings = [];
+
+        foreach($definitions as $id => $concrete) {
+            $this->set($id, $concrete);
+        }
+    }
+
     public function get(string $id)
     {
         if ($this->has($id)) {

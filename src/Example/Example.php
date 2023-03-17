@@ -8,8 +8,14 @@ use Aolbrich\PhpDiContainer\Container;
 
 require_once realpath(__DIR__ . '/../../vendor') . '/autoload.php';
 
-$container = new Container();
-$container->set(ExampleServiceInterface::class, ExampleService::class);
+$definitions = [
+    ExampleServiceInterface::class => ExampleService::class,
+];
+
+$container = new Container($definitions);
+
+$container->setDefinitions($definitions);
+// $container->set(ExampleServiceInterface::class, ExampleService::class);
 
 /*
     We also could use binding as a closure

@@ -16,8 +16,9 @@ class SetterWireTest extends TestCase
 {
     public function testClassResolvesWithAutowire(): void
     {
-        $container = new Container();
-        $container->set(AutoWireInterface::class, ClassWithoutDependencyImplementsInterface::class);
+        $container = new Container(
+            [AutoWireInterface::class => ClassWithoutDependencyImplementsInterface::class]
+        );
         $class = $container->resolveClass(ClassSetterAutoWire::class);
 
         $this->assertTrue($class->getResult());

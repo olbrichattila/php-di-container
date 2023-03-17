@@ -37,6 +37,29 @@ $class = $container->resolveClass(ExampleClassForFunctionLevelResolve::class);
 
 echo $class->getResponseWithAutowiredParams(); // they will be auto wired
 ```
+## Using array to set the resolver definitions
+It is also possible to pass the definitions to the class via it's constructor, or calling the setDefinitions method instad of using the `set` method.
+It makes possible to set multiple definitions at one:
+
+Example:
+```
+$definitions = [
+    ExampleServiceInterface::class => ExampleService::class,
+];
+
+$container = new Container($definitions);
+
+```
+OR
+```
+$definitions = [
+    ExampleServiceInterface::class => ExampleService::class,
+];
+
+$container = new Container();
+$container->setDefinitions($definitions);
+
+```
 ## The class:
 ```
 class ExampleClassForFunctionLevelResolve
