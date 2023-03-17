@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Aolbrich\PhpDiContainer;
 
-use phpDocumentor\Reflection\Types\Mixed_;
 use Psr\Container\ContainerInterface;
 use Aolbrich\PhpDiContainer\Exceptions\ContainerException;
 use Aolbrich\PhpDiContainer\Exceptions\NotFoundException;
