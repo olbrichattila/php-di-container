@@ -36,7 +36,6 @@ class ClassResolver
 
             public function __call(string $methodName, array $params): mixed
             {
-                // $reflectionClass = new ReflectionClass($this->className);
                 $method = $this->getMethod($methodName);
                 $annotations = $this->getAnnotations($method);
                 

@@ -28,7 +28,7 @@ $container = new Container();
 $class = $container->get(ExampleClass::class);
 ```
 ## Returns new class and autowire all methods where the annotation says @atowire
-(not the new class will not return with the same class name, or not even inherited from the original class)
+(Note: The new class will not return with the same class name, or not even inherited from the original class)
 ```
 $container = new Container();
 $container->set(ExampleServiceInterface::class, ExampleService::class);

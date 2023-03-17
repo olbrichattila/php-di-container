@@ -12,6 +12,7 @@ use Aolbrich\Test\Fixtures\AutoWireInterface;
 use Aolbrich\Test\Fixtures\ClassAutoWiringParentInterface;
 use Aolbrich\Test\Fixtures\ClassWithoutDependencyImplementsInterface;
 use Aolbrich\Test\Fixtures\ClassRecursiveDepenendies;
+use ReflectionException;
 
 require_once 'fixtureLoader.php';
 
@@ -51,7 +52,7 @@ class ContainerTest extends TestCase
 
     public function testInvalidClassTrhorwError(): void
     {
-        $this->expectException(\ReflectionException::class);
+        $this->expectException(ReflectionException::class);
         $container = new Container();
         $class = $container->get('InvalidClassName');
     }
