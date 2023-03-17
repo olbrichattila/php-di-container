@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use Aolbrich\PhpDiContainer\Exceptions\ContainerException;
 use Aolbrich\PhpDiContainer\Exceptions\NotFoundException;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionNamedType;
 
@@ -30,7 +31,11 @@ class Container implements ContainerInterface
             $id = $binding;
         }
 
-        return $this->resolve($id);
+        $resolved = $this->resolve($id);
+
+        $resolved = $this->resolveSetterInjections($resolved);
+
+        return $resolved;
     }
 
     public function has(string $id): bool
@@ -86,10 +91,55 @@ class Container implements ContainerInterface
         }, $parameters);
     }
 
+    public function getAnnotations(ReflectionMethod $method): array
+            {
+                $docComment = $method->getDocComment();
+                if (!$docComment) {
+                    return [];
+                }
+                preg_match_all('#@(.*?)\n#s', $docComment, $annotations);
+                return array_map(
+                    'trim',
+                    array_map(
+                        'strtolower',
+                        reset($annotations)
+                    )
+                );
+            }
+
     public function resolveClass(string $className): Object
     {
         $classResolver = new ClassResolver($this);
-
+        
         return $classResolver->resolveClass($className);
+    }
+
+    private function resolveSetterInjections(Object $class): Object
+    {
+        $className = get_class($class);
+        $reflection = $this->getReflectionClass($className);
+        $methods = $reflection->getMethods();
+        
+        foreach ($methods as $method) {
+            $methodName = $method->getName();
+            $annotations = $this->getAnnotations($method);
+            
+            if (
+                preg_match('/^set.*$/i', $methodName)
+                && in_array('@autowire', $annotations)
+            ) {
+                if ($method->isPublic() === false) {
+                    throw new ContainerException('In case of setter injection the method must be public');
+                }
+
+                $dependencies = $this->getDependencies(
+                    $method->getParameters(),
+                    $className
+                );
+                call_user_func_array([$class, $methodName], $dependencies);
+            }
+        }
+
+        return $class;
     }
 }

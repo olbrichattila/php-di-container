@@ -55,7 +55,6 @@ class ExampleClassForFunctionLevelResolve
 }
 
 ```
-
 ### Usage with interface resolution:
 If the class implements a constuctor injection with interface type hint, then the container cannot resolve the depenceny automatically, therefore mapping should be provided by the set method. Mapping can be done by interface and class names, or interface name and closure as well.
 
@@ -96,6 +95,41 @@ $container->set(ExampleServiceInterface::class, function(Container $container) {
 
 $class = $container->get(ExampleClass::class);
 ```
+## Setter Autowire
+It is also possible to auto wire setters, The requirement for auto wiring setters are:
+- The method have to be public
+- The method name have to start with "set" like "setLogger()"
+- To auto wire, you need to add the @autowire annotations.
+
+There can be any amount of setters
+
+Example class wiring two dependencies at one setter.
+
+```
+class ExampleSetterAutowireClass
+{
+    private ExampleServiceInterface $exampleService;
+    private ExampleSubService $exampleSubService;
+
+    /**
+     * @Autowire
+     */
+    public function setAutowire(
+        ExampleServiceInterface $exampleService,
+        ExampleSubService $exampleSubService
+    ) {
+        $this->exampleService =  $exampleService;
+        $this->exampleSubService = $exampleSubService;
+    }
+
+    public function getResponse(): string
+    {
+        return
+            $this->exampleService->getResponse() . ' / ' .
+            $this->exampleSubService->getResponse() . PHP_EOL;
+    }
+}
+```
 ### Run the unit test
 ```
 ./vendor/bin/phpunit test
@@ -115,17 +149,17 @@ This is not a full implementation of a dependency injection container. It resolv
 
 Features missing / will be added
 - Only basic circular reference check added, improve to check for example, if ClassA depends on ClassB, and ClassB depends on ClassC, which in turn depends on ClassA, the code would not detect this circular reference. This can be addressed by maintaining a stack of dependencies and checking for cycles in the stack.
+- ~~Constructor Injection~~
+- ~~Setter Injection~~
+- ~~Method Injection~~
 - Caching
 - Aliases
 - Injecting primitive paramater values
 - Singleton support,
 - Optional parameters
 - Annotations
-- ~~Constructor Injection (added)~~
 - Immutable-setter Injection
-- Setter Injection
 - Property Injection
-- ~~Method Injection~~
 
 ## Licence
 MIT licence

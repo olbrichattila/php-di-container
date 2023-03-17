@@ -36,39 +36,20 @@ class ClassResolver
 
             public function __call(string $methodName, array $params): mixed
             {
-                $method = $this->getMethod($methodName);
-                $annotations = $this->getAnnotations($method);
+                $reflectionClass = new ReflectionClass($this->className);
+                $method = $reflectionClass->getMethod($methodName);
+                $annotations = $this->container->getAnnotations($method);
                 
                 if (in_array('@autowire', $annotations)) {
-                    $parameters = $method->getParameters();
-                    $dependencies = $this->container->getDependencies($parameters, $this->className);
+                    $dependencies = $this->container->getDependencies(
+                        $method->getParameters(),
+                        $this->className
+                    );
+                    
                     return call_user_func_array([$this->class, $methodName], $dependencies);
                 }
 
                 return call_user_func_array([$this->class, $methodName], $params);
-            }
-
-            private function getMethod(string $methodName): ReflectionMethod
-            {
-                $reflectionClass = new ReflectionClass($this->className);
-
-                return $reflectionClass->getMethod($methodName);
-            }
-
-            private function getAnnotations(ReflectionMethod $method): array
-            {
-                $docComment = $method->getDocComment();
-                if (!$docComment) {
-                    return [];
-                }
-                preg_match_all('#@(.*?)\n#s', $docComment, $annotations);
-                return array_map(
-                    'trim',
-                    array_map(
-                        'strtolower',
-                        reset($annotations)
-                    )
-                );
             }
         };
     }

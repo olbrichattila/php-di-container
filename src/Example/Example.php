@@ -18,10 +18,15 @@ $container->set(ExampleServiceInterface::class, ExampleService::class);
         return $container->get(ExampleService::class);
     });
 */
-$class = $container->get(ExampleClass::class);
 
+// Resolve class
+$class = $container->get(ExampleClass::class);
 echo $class->getResponse();
 
+// Resolve all functions in class with @autowire annotation
 $class2 = $container->resolveClass(ExampleClassForFunctionLevelResolve::class);
-
 echo $class2->getResponseWithAutowiredParams();
+
+$class3 = $container->resolveClass(ExampleSetterAutowireClass::class);
+echo $class3->getResponse();
+
