@@ -14,10 +14,17 @@ $definitions = [
 
 $container = new Container($definitions);
 
-$container->setDefinitions($definitions);
-// $container->set(ExampleServiceInterface::class, ExampleService::class);
-
 /*
+    It is also possible to load the definitions this way
+
+    $container->setDefinitions($definitions);
+
+    or adding a new one, which does not overwrite the existing bindings
+
+    $container->set(ExampleServiceInterface::class, ExampleService::class);
+
+    or use closure (can be used in the array definition as well)
+
     We also could use binding as a closure
 
     $container->set(ExampleServiceInterface::class, function(Container $container) {
