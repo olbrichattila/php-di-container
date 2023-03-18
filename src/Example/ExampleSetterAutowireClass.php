@@ -9,8 +9,13 @@ namespace Aolbrich\PhpDiContainer\Example;
  */
 class ExampleSetterAutowireClass
 {
-    private ExampleServiceInterface $exampleService;
-    private ExampleSubService $exampleSubService;
+    private ExampleServiceInterface $exampleServiceSetter;
+    private ExampleSubService $exampleSubServiceSetter;
+
+    public function __Construct(
+        private readonly ExampleServiceInterface $exampleService,
+    ) {
+    }
 
     /**
      * @Autowire
@@ -19,14 +24,15 @@ class ExampleSetterAutowireClass
         ExampleServiceInterface $exampleService,
         ExampleSubService $exampleSubService
     ) {
-        $this->exampleService =  $exampleService;
-        $this->exampleSubService = $exampleSubService;
+        $this->exampleServiceSetter =  $exampleService;
+        $this->exampleSubServiceSetter = $exampleSubService;
     }
 
     public function getResponse(): string
     {
         return
             $this->exampleService->getResponse() . ' / ' .
-            $this->exampleSubService->getResponse() . PHP_EOL;
+            $this->exampleServiceSetter->getResponse() . ' / ' .
+            $this->exampleSubServiceSetter->getResponse() . PHP_EOL;
     }
 }

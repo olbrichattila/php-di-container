@@ -36,6 +36,9 @@ class ClassResolver
 
             public function __call(string $methodName, array $params): mixed
             {
+                if (strtolower($methodName) === '__construct') {
+                    return null;
+                }
                 $reflectionClass = new ReflectionClass($this->className);
                 $method = $reflectionClass->getMethod($methodName);
                 $annotations = $this->container->getAnnotations($method);

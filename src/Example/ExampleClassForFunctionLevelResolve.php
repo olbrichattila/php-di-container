@@ -9,6 +9,11 @@ namespace Aolbrich\PhpDiContainer\Example;
  */
 class ExampleClassForFunctionLevelResolve
 {
+    public function __Construct(
+        private readonly ExampleServiceInterface $exampleService,
+    ) {
+    }
+
     /**
      * @Autowire
      */
@@ -17,8 +22,8 @@ class ExampleClassForFunctionLevelResolve
         ExampleSubService $exampleSubService): string
     {
         return
+            $this->exampleService->getResponse() . ' / ' .
             $exampleService->getResponse() . ' / ' .
             $exampleSubService->getResponse() . PHP_EOL;
     }
 }
-
