@@ -135,9 +135,6 @@ class Container implements ContainerInterface
         
         foreach ($methods as $method) {
             $methodName = $method->getName();
-            if (strtolower($methodName) === '__construct') {
-                continue;
-            }
             $annotations = $this->getAnnotations($method);
             
             if (

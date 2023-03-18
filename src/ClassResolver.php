@@ -36,7 +36,7 @@ class ClassResolver
 
             public function __call(string $methodName, array $params): mixed
             {
-                if (strtolower($methodName) === '__construct') {
+                if (preg_match('/^__.*$/i', $methodName)) {
                     return null;
                 }
                 $reflectionClass = new ReflectionClass($this->className);
