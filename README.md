@@ -153,6 +153,34 @@ class ExampleSetterAutowireClass
     }
 }
 ```
+### Singleton creation support
+Class can be created as signletor by using the sigleton() function or auto wire with closure.
+Examples:
+```
+$container = new Container();
+
+// Resolve as non Singletone
+$class = $container->get(ExampleSetterAutowireClass::class);
+$class2 = $container->get(ExampleSetterAutowireClass::class);
+
+echo $class === $class2 ? "Same class instance created\n" : "Different class instance created\n";
+
+// Resolve as Singletone
+$class = $container->singletone(ExampleSetterAutowireClass::class);
+$class2 = $container->singletone(ExampleSetterAutowireClass::class);
+
+echo $class === $class2 ? "Same class instance created\n" : "Different class instance created\n";
+
+// Autowire as Singleton
+$container->set(ExampleService::class, function(Container $container) {
+    return $container->singletone(ExampleService::class);
+});
+
+$class = $container->get(ExampleService::class);
+$class2 = $container->get(ExampleService::class);
+
+echo $class === $class2 ? "Same class instance created\n" : "Different class instance created\n";
+```
 ### Run the unit test
 ```
 ./vendor/bin/phpunit test

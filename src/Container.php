@@ -18,6 +18,7 @@ use ReflectionNamedType;
 class Container implements ContainerInterface
 {
     protected array $bindings = [];
+    protected array $singletones = [];
 
     public function __construct(array $definitions = [])
     {
@@ -35,10 +36,18 @@ class Container implements ContainerInterface
 
     public function get(string $id)
     {
+        if (array_key_exists($id, $this->singletones) && $this->singletones[$id] === null) {
+            return $this->singletones[$id];
+        }
+        
         if ($this->has($id)) {
             $binding = $this->bindings[$id];
             if (is_callable($binding)) {
-                return $binding($this);
+                if (!array_key_exists($id, $this->singletones)) {
+                    return $binding($this);
+                } else if($this->singletones[$id] === null) {
+                    return $binding($this);
+                }
             }
 
             $id = $binding;
@@ -49,6 +58,16 @@ class Container implements ContainerInterface
         $resolved = $this->resolveSetterInjections($resolved);
 
         return $resolved;
+    }
+
+    public function singletone(string $id)
+    {
+        if (!array_key_exists($id, $this->singletones)) {
+            $this->singletones[$id] = null;
+            $this->singletones[$id] = $this->get($id);
+        }
+
+        return $this->singletones[$id];
     }
 
     public function has(string $id): bool
