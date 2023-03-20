@@ -8,3 +8,4 @@ require_once 'fixtures/ClassWithoutDependencyImplementsInterface.php';
 require_once 'fixtures/ClassRecursiveDepenendies.php';
 require_once 'fixtures/ClassForFunctionLevelResolve.php';
 require_once 'fixtures/ClassSetterAutoWire.php';
+require_once 'fixtures/ClassWithPrimitiveValues.php';

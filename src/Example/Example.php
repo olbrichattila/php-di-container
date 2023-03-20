@@ -44,6 +44,14 @@ echo $class2->getResponseWithAutowiredParams();
 $class3 = $container->get(ExampleSetterAutowireClass::class);
 echo $class3->getResponse();
 
+// Resolve with extra parameters
+$class = $container->get(ExampleParameterBinding::class, [
+    'intValue' => 10,
+    'stringValue' => "Hello String",
+    'anyValue' => "This is any value"
+]);
+echo $class->getResponse();
+
 // Resolve as non Singletone
 $class = $container->get(ExampleSetterAutowireClass::class);
 $class2 = $container->get(ExampleSetterAutowireClass::class);
@@ -55,7 +63,6 @@ $class = $container->singletone(ExampleSetterAutowireClass::class);
 $class2 = $container->singletone(ExampleSetterAutowireClass::class);
 
 echo $class === $class2 ? "Same class instance created\n" : "Different class instance created\n";
-
 
 // Autowire as Singleton
 $container->set(ExampleService::class, function(Container $container) {

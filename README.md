@@ -153,6 +153,45 @@ class ExampleSetterAutowireClass
     }
 }
 ```
+### Add primitive parameters
+You can add extra parameters to your class resolve to bind:
+
+Examlpe:
+```
+$class = $container->get(ExampleParameterBinding::class, [
+    'intValue' => 10,
+    'stringValue' => "Hello String",
+    'anyValue' => "This is any value"
+]);
+echo $class->getResponse();
+```
+Class implementation:
+```
+class ExampleParameterBinding
+{
+    private mixed $anyValue;
+
+    public function __construct(
+        private readonly ExampleServiceInterface $exampleService,
+        private readonly ExampleSubService $exampleSubService,
+        private readonly int $intValue,
+        private readonly string $stringValue,
+        $anyValue,
+    ) {
+        $this->anyValue = $anyValue;
+    }
+
+    public function getResponse(): string
+    {
+        return
+            $this->intValue . ' / ' .
+            $this->stringValue . ' / ' .
+            $this->anyValue . ' / ' .
+            $this->exampleService->getResponse() . ' / ' .
+            $this->exampleSubService->getResponse() . PHP_EOL;
+    }
+}
+```
 ### Singleton creation support
 Class can be created as signletor by using the sigleton() function or auto wire with closure.
 Examples:
@@ -199,18 +238,17 @@ Run code quality check:
 This is not a full implementation of a dependency injection container. It resolves only constructor dependencies.
 
 Features missing / will be added
-- Only basic circular reference check added, improve to check for example, if ClassA depends on ClassB, and ClassB depends on ClassC, which in turn depends on ClassA, the code would not detect this circular reference. This can be addressed by maintaining a stack of dependencies and checking for cycles in the stack.
 - ~~Constructor Injection~~
 - ~~Setter Injection~~
 - ~~Method Injection~~
+- ~~Singleton support~~
+- ~~Property Injection~~ (it will not be done, as it does not considered as a goop practice any more)
+- ~~Injecting primitive paramater values~~
 - Caching
 - Aliases
-- Injecting primitive paramater values
-- Singleton support,
-- Optional parameters
-- Annotations
+- Annotations (partly implemented with @autowire keywords in setters)
 - Immutable-setter Injection
-- Property Injection
+- Only basic circular reference check added, improve to check for example, if ClassA depends on ClassB, and ClassB depends on ClassC, which in turn depends on ClassA, the code would not detect this circular reference. This can be addressed by maintaining a stack of dependencies and checking for cycles in the stack.
 
 ## Licence
 MIT licence

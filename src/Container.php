@@ -34,7 +34,7 @@ class Container implements ContainerInterface
         }
     }
 
-    public function get(string $id)
+    public function get(string $id, array $extraBindingParameters = [])
     {
         if (array_key_exists($id, $this->singletones) && $this->singletones[$id] === null) {
             return $this->singletones[$id];
@@ -53,7 +53,7 @@ class Container implements ContainerInterface
             $id = $binding;
         }
 
-        $resolved = $this->resolve($id);
+        $resolved = $this->resolve($id, $extraBindingParameters);
 
         $resolved = $this->resolveSetterInjections($resolved);
 
@@ -80,7 +80,7 @@ class Container implements ContainerInterface
         $this->bindings[$id] = $concrete;
     }
 
-    public function resolve(string $id): mixed
+    public function resolve(string $id, array $extraBindingParameters = []): mixed
     {
         $reflectionClass = $this->getReflectionClass($id);
         if (!$constructor = $reflectionClass->getConstructor()) {
@@ -92,7 +92,7 @@ class Container implements ContainerInterface
         }
 
         return $reflectionClass->newInstanceArgs(
-            $this->getDependencies($parameters, $id)
+            $this->getDependencies($parameters,$id, $extraBindingParameters)
         );
     }
 
@@ -106,18 +106,27 @@ class Container implements ContainerInterface
         return $reflectionClass;
     }
 
-    public function getDependencies(array $parameters, string $id): array
+    public function getDependencies(array $parameters, string $id, array $extraBindingParameters = []): array
     {
-        return array_map(function (ReflectionParameter $parameter) use ($id): mixed {
+        return array_map(function (ReflectionParameter $parameter) use ($id, $extraBindingParameters): mixed {
             $parameterType = $parameter->getType();
+            $parameterName = $parameter->getName();
             $parameterTypeName = $parameterType ? $parameterType->getName() : 'unknown';
+            $callParameter = $extraBindingParameters[$parameterName] ?? null;
+            if ($callParameter !== null) {
+                if ($parameterType !== 'unknown' && $parameterType instanceof ReflectionNamedType) {
+                    $callParameter = $this->converArgument($parameterTypeName, (string)$callParameter);
+                    return $callParameter;
+                }
 
-            if ($parameterType instanceof ReflectionNamedType && !$parameterType->isBuiltIn()) {
+                return $callParameter;
+            } elseif ($parameterType instanceof ReflectionNamedType && !$parameterType->isBuiltIn()) {
                 if ($parameterTypeName === $id) {
                     throw new ContainerException('Class ' . $id . ' is circular referenced');
                 }
                 return $this->get($parameterTypeName);
             }
+            
 
             throw new NotFoundException('Failed to resolve ' . $id . ' parameter type "' . $parameterTypeName . '" cannot be resolved');
         }, $parameters);
@@ -173,5 +182,19 @@ class Container implements ContainerInterface
         }
 
         return $class;
+    }
+
+    protected function converArgument(string $type, string $argument): mixed
+    {
+        $result = $argument;
+        switch ($type) {
+            case 'int':
+                $result = intval($result);
+                break;
+            case 'float':
+                $result = floatval($result);
+        }
+
+        return $result;
     }
 }

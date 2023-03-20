@@ -12,6 +12,7 @@ use Aolbrich\Test\Fixtures\AutoWireInterface;
 use Aolbrich\Test\Fixtures\ClassAutoWiringParentInterface;
 use Aolbrich\Test\Fixtures\ClassWithoutDependencyImplementsInterface;
 use Aolbrich\Test\Fixtures\ClassRecursiveDepenendies;
+use Aolbrich\Test\Fixtures\ClassWithPrimitiveValues;
 use ReflectionException;
 
 require_once 'fixtureLoader.php';
@@ -84,5 +85,21 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(ClassRecursiveDepenendies::class, $class);
         $this->assertTrue($class->getResult());
+    }
+
+    public function testResolvesPrimitiveValues(): void
+    {
+        $expectedIntValue = rand(1, 100);
+        $expectedStringValue = 'Expected String ' . $expectedIntValue;
+
+        $container = new Container();
+        $class = $container->get(ClassWithPrimitiveValues::class, [
+            'intValue' => $expectedIntValue,
+            'stringValue'=> $expectedStringValue,
+        ]);
+
+        $this->assertInstanceOf(ClassWithPrimitiveValues::class, $class);
+        $this->assertEquals($class->intValue, $expectedIntValue);
+        $this->assertEquals($class->stringValue, $expectedStringValue);
     }
 }
