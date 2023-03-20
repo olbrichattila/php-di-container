@@ -36,7 +36,7 @@ class Container implements ContainerInterface
 
     public function get(string $id, array $extraBindingParameters = [])
     {
-        if (array_key_exists($id, $this->singletons) && $this->singletons[$id] === null) {
+        if (array_key_exists($id, $this->singletons) && $this->singletons[$id] !== null) {
             return $this->singletons[$id];
         }
         
@@ -60,11 +60,11 @@ class Container implements ContainerInterface
         return $resolved;
     }
 
-    public function singleton(string $id)
+    public function singleton(string $id, array $extraBindingParameters = [])
     {
         if (!array_key_exists($id, $this->singletons)) {
             $this->singletons[$id] = null;
-            $this->singletons[$id] = $this->get($id);
+            $this->singletons[$id] = $this->get($id, $extraBindingParameters);
         }
 
         return $this->singletons[$id];
