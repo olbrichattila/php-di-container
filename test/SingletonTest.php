@@ -16,7 +16,7 @@ use ReflectionException;
 
 require_once 'fixtureLoader.php';
 
-class SingletoneTest extends TestCase
+class singletonTest extends TestCase
 {
     public function testSimpleClassResolvesAsSingletonOnlyWhenCreteadWithSingleton(): void
     {
@@ -27,8 +27,8 @@ class SingletoneTest extends TestCase
         // Assert two different classes returned
         $this->assertFalse($class1 === $class2);
 
-        $class3 = $container->singletone(ClassWithoutDependency::class);
-        $class4 = $container->singletone(ClassWithoutDependency::class);
+        $class3 = $container->singleton(ClassWithoutDependency::class);
+        $class4 = $container->singleton(ClassWithoutDependency::class);
 
         // Assert the same class is returned
         $this->assertTrue($class3 === $class4);

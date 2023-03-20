@@ -18,7 +18,7 @@ use ReflectionNamedType;
 class Container implements ContainerInterface
 {
     protected array $bindings = [];
-    protected array $singletones = [];
+    protected array $singletons = [];
 
     public function __construct(array $definitions = [])
     {
@@ -36,16 +36,16 @@ class Container implements ContainerInterface
 
     public function get(string $id, array $extraBindingParameters = [])
     {
-        if (array_key_exists($id, $this->singletones) && $this->singletones[$id] === null) {
-            return $this->singletones[$id];
+        if (array_key_exists($id, $this->singletons) && $this->singletons[$id] === null) {
+            return $this->singletons[$id];
         }
         
         if ($this->has($id)) {
             $binding = $this->bindings[$id];
             if (is_callable($binding)) {
-                if (!array_key_exists($id, $this->singletones)) {
+                if (!array_key_exists($id, $this->singletons)) {
                     return $binding($this);
-                } else if($this->singletones[$id] === null) {
+                } else if($this->singletons[$id] === null) {
                     return $binding($this);
                 }
             }
@@ -60,14 +60,14 @@ class Container implements ContainerInterface
         return $resolved;
     }
 
-    public function singletone(string $id)
+    public function singleton(string $id)
     {
-        if (!array_key_exists($id, $this->singletones)) {
-            $this->singletones[$id] = null;
-            $this->singletones[$id] = $this->get($id);
+        if (!array_key_exists($id, $this->singletons)) {
+            $this->singletons[$id] = null;
+            $this->singletons[$id] = $this->get($id);
         }
 
-        return $this->singletones[$id];
+        return $this->singletons[$id];
     }
 
     public function has(string $id): bool

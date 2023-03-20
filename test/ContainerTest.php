@@ -55,7 +55,7 @@ class ContainerTest extends TestCase
     {
         $this->expectException(ReflectionException::class);
         $container = new Container();
-        $class = $container->get('InvalidClassName');
+        $container->get('InvalidClassName');
     }
 
     public function testResolvesAutoWiredClassInConstructor(): void
