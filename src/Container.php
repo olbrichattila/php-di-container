@@ -46,18 +46,17 @@ class Container implements ContainerInterface
                 if (!array_key_exists($id, $this->singletons)) {
                     return $binding($this);
                 } else if($this->singletons[$id] === null) {
-                    return $binding($this);
+                    $resolved = $this->resolveWithSetterInjections($id, $extraBindingParameters);
+                    $this->singletons[$id] = $resolved;
+
+                    return $resolved;
                 }
             }
 
             $id = $binding;
         }
 
-        $resolved = $this->resolve($id, $extraBindingParameters);
-
-        $resolved = $this->resolveSetterInjections($resolved);
-
-        return $resolved;
+        return $this->resolveWithSetterInjections($id, $extraBindingParameters);
     }
 
     public function singleton(string $id, array $extraBindingParameters = [])
@@ -94,6 +93,13 @@ class Container implements ContainerInterface
         return $reflectionClass->newInstanceArgs(
             $this->getDependencies($parameters,$id, $extraBindingParameters)
         );
+    }
+
+    protected function resolveWithSetterInjections(string $id, array $extraBindingParameters): mixed
+    {
+        $resolved = $this->resolve($id, $extraBindingParameters);
+        
+        return $this->resolveSetterInjections($resolved);
     }
 
     protected function getReflectionClass(string $id): ReflectionClass
